@@ -10,6 +10,8 @@ use stellar_fungible::{
 const OWNER: Symbol = symbol_short!("OWNER");
 const MYBOOL: Symbol = symbol_short!("MYBOOL");
 const MYENUM: Symbol = symbol_short!("MYENUM");
+const STATUS: Symbol = symbol_short!("STATUS");
+const TESTKIND: Symbol = symbol_short!("TESTKIND");
 
 #[contracttype]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -20,17 +22,36 @@ pub enum TestMode {
     Production = 2,
 }
 
+#[contracttype]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum Status {
+    Active,
+    Inactive,
+    Pending,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+pub enum TestKind {
+    Development(String),
+    Testing(u128),
+    Production(bool, u32),
+}
+
+
 #[contract]
 pub struct MyToken;
 
 #[contractimpl]
 impl MyToken {
-    pub fn __constructor(e: &Env, owner: Address, initial_supply: i128, mybool: bool, myenum: TestMode) {
+    pub fn __constructor(e: &Env, owner: Address, initial_supply: i128, mybool: bool, myenum: TestMode, status: Status, testkind: TestKind) {
         fungible::metadata::set_metadata(e, 18, String::from_str(e, "MyToken"), String::from_str(e, "MTK"));
         fungible::mintable::mint(e, &owner, initial_supply);
         e.storage().instance().set(&OWNER, &owner);
         e.storage().instance().set(&MYBOOL, &mybool);
         e.storage().instance().set(&MYENUM, &myenum);
+        e.storage().instance().set(&STATUS, &status);
+        e.storage().instance().set(&TESTKIND, &testkind);
     }
 }
 
