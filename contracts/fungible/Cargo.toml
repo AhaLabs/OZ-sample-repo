@@ -1,0 +1,19 @@
+[package]
+name = "fungible-contract"
+edition.workspace = true
+license.workspace = true
+publish = false
+version = "0.0.1"
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+stellar-default-impl-macro = { workspace = true }
+stellar-fungible = { workspace = true }
+soroban-sdk = { workspace = true }
+
+[dev-dependencies]
+soroban-sdk = { workspace = true, features = ["testutils"] }
+
