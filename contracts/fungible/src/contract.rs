@@ -12,6 +12,7 @@ const MYBOOL: Symbol = symbol_short!("MYBOOL");
 const MYENUM: Symbol = symbol_short!("MYENUM");
 const STATUS: Symbol = symbol_short!("STATUS");
 const TESTKIND: Symbol = symbol_short!("TESTKIND");
+const TESTOBJ: Symbol = symbol_short!("TESTOBJ");
 
 #[contracttype]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
@@ -31,20 +32,29 @@ pub enum Status {
 }
 
 #[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct TestObject {
+    pub id: u32,
+    pub name: String,
+    pub active: bool,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
 pub enum TestKind {
     Development(String),
     Testing(u128),
     Production(bool, u32),
+    Custom(TestObject),
 }
-
 
 #[contract]
 pub struct MyToken;
 
+
 #[contractimpl]
 impl MyToken {
-    pub fn __constructor(e: &Env, owner: Address, initial_supply: i128, mybool: bool, myenum: TestMode, status: Status, testkind: TestKind) {
+    pub fn __constructor(e: &Env, owner: Address, initial_supply: i128, mybool: bool, myenum: TestMode, status: Status, testkind: TestKind, testobj: TestObject) {
         fungible::metadata::set_metadata(e, 18, String::from_str(e, "MyToken"), String::from_str(e, "MTK"));
         fungible::mintable::mint(e, &owner, initial_supply);
         e.storage().instance().set(&OWNER, &owner);
@@ -52,6 +62,7 @@ impl MyToken {
         e.storage().instance().set(&MYENUM, &myenum);
         e.storage().instance().set(&STATUS, &status);
         e.storage().instance().set(&TESTKIND, &testkind);
+        e.storage().instance().set(&TESTOBJ, &testobj);
     }
 }
 
